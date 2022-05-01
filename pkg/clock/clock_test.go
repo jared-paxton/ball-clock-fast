@@ -40,7 +40,7 @@ func TestClockIncrement(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			clock := newClock(27)
+			clock := new(27)
 			clock.incrementMultipleMin(test.minsToIncrement)
 
 			if test.wantTime != clock.time() {
@@ -52,13 +52,13 @@ func TestClockIncrement(t *testing.T) {
 
 func TestDetermineClockState(t *testing.T) {
 	var tracks []ballTrack
-	tracks = append(tracks, ballTrack{balls: []clockBall{}})
-	tracks = append(tracks, ballTrack{balls: []clockBall{22, 13, 25, 3, 7}})
-	tracks = append(tracks, ballTrack{balls: []clockBall{6, 12, 17, 4, 15}})
+	tracks = append(tracks, ballTrack{balls: []int{}})
+	tracks = append(tracks, ballTrack{balls: []int{22, 13, 25, 3, 7}})
+	tracks = append(tracks, ballTrack{balls: []int{6, 12, 17, 4, 15}})
 	wantClockState := ballClock{
 		tracks: tracks,
 		queue: ballQueue{
-			balls: []clockBall{11, 5, 26, 18, 2, 30, 19, 8, 24, 10, 29, 20, 16, 21, 28, 1, 23, 14, 27, 9},
+			balls: []int{11, 5, 26, 18, 2, 30, 19, 8, 24, 10, 29, 20, 16, 21, 28, 1, 23, 14, 27, 9},
 		},
 	}
 

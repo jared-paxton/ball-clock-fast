@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func (track *ballTrack) addBall(b clockBall) []clockBall {
+func (track *ballTrack) addBall(b int) []int {
 	if len(track.balls) == track.max {
 		returnedBalls := reverseBallOrder(track.balls)
 		track.balls = track.balls[:0]
@@ -15,11 +15,12 @@ func (track *ballTrack) addBall(b clockBall) []clockBall {
 	return nil
 }
 
-func reverseBallOrder(orig []clockBall) []clockBall {
-	reversed := make([]clockBall, len(orig))
+func reverseBallOrder(orig []int) []int {
+	reversed := make([]int, len(orig))
 	copy(reversed, orig)
 
-	for i := 0; i < len(orig)/2; i++ {
+	half := len(orig) / 2
+	for i := 0; i < half; i++ {
 		j := len(orig) - i - 1
 		reversed[i], reversed[j] = orig[j], orig[i]
 	}
@@ -27,9 +28,9 @@ func reverseBallOrder(orig []clockBall) []clockBall {
 	return reversed
 }
 
-func newTrack(name string, max int) ballTrack {
-	var balls []clockBall
-	return ballTrack{
+func newTrack(name string, max int) *ballTrack {
+	balls := make([]int, 0, max)
+	return &ballTrack{
 		name:  name,
 		balls: balls,
 		max:   max,
@@ -41,8 +42,8 @@ func (track *ballTrack) equals(otherTrack *ballTrack) bool {
 		return false
 	}
 
-	for i := range track.balls {
-		if track.balls[i] != otherTrack.balls[i] {
+	for i := 0; i < len(track.balls); i++ {
+		if (track.balls)[i] != (otherTrack.balls)[i] {
 			return false
 		}
 	}

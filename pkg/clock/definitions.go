@@ -25,16 +25,14 @@ const (
 	hrPos          = 2
 )
 
-type clockBall int
-
 type ballTrack struct {
 	name  string
-	balls []clockBall
+	balls []int
 	max   int
 }
 
 type ballQueue struct {
-	balls []clockBall
+	balls []int
 }
 
 type ballClock struct {
@@ -43,8 +41,8 @@ type ballClock struct {
 }
 
 type clockJSON struct {
-	OneMinTrack  []clockBall `json:"Min"`
-	FiveMinTrack []clockBall `json:"FiveMin"`
-	HourTrack    []clockBall `json:"Hour"`
-	Queue        []clockBall `json:"Main"`
+	OneMinTrack  []int `json:"Min"`
+	FiveMinTrack []int `json:"FiveMin"`
+	HourTrack    []int `json:"Hour"`
+	Queue        []int `json:"Main"`
 }

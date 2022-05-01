@@ -7,9 +7,9 @@ import (
 	"time"
 )
 
-// ClockState prints the state of a ball clock with the given number of balls
+// State prints the state of a ball clock with the given number of balls
 // and ran for the specified minutes in a JSON format.
-func ClockState(numBalls, minToRun int) error {
+func State(numBalls, minToRun int) error {
 	err := validateInput(numBalls)
 	if err != nil {
 		return err
@@ -31,13 +31,11 @@ func ClockState(numBalls, minToRun int) error {
 // to return to the same order in its initial state, given the number of balls.
 func CycleDays(numBalls int) error {
 	start := time.Now()
-
 	days, err := determineCycleDays(numBalls)
+	duration := time.Since(start)
 	if err != nil {
 		return err
 	}
-
-	duration := time.Since(start)
 
 	fmt.Printf("%d balls cycle after %d days\n", numBalls, days)
 	fmt.Printf("Completed in %d milliseconds (%.3f seconds)\n", duration.Milliseconds(), duration.Seconds())
@@ -45,7 +43,7 @@ func CycleDays(numBalls int) error {
 }
 
 func determineClockState(numBalls, minToRun int) *ballClock {
-	clock := newClock(numBalls)
+	clock := new(numBalls)
 	clock.incrementMultipleMin(minToRun)
 	return clock
 }
@@ -71,14 +69,17 @@ func determineCycleDays(numBalls int) (int, error) {
 		return 0, fmt.Errorf("number of balls must be between %d and %d", minBalls, maxBalls)
 	}
 
-	clock := newClock(numBalls)
-	initialClock := newClock(numBalls)
+	clock := new(numBalls)
+	initialClock := *clock
 
-	min := 1
+	// No need to check if the states are equal before the calculated minimum
+	clock.incrementMultipleMin(minMinutesToRepeat - 1)
+
+	min := minMinutesToRepeat
 	for {
 		clock.incrementOneMin()
-		// No need to check if the states are equal before the calculated minimum
-		if min >= minMinutesToRepeat && clock.equals(initialClock) {
+
+		if clock.equals(&initialClock) {
 			break
 		}
 		min++
@@ -94,15 +95,15 @@ func validateInput(numBalls int) error {
 	return nil
 }
 
-func newClock(numBalls int) *ballClock {
-	var t []ballTrack
-	t = append(t, newTrack(oneMinTrackName, oneMinTrackMax))
-	t = append(t, newTrack(fiveMinTrackName, fiveMinTrackMax))
-	t = append(t, newTrack(hourTrackName, hourTrackMax))
+func new(numBalls int) *ballClock {
+	t := make([]ballTrack, 0, 3)
+	t = append(t, *newTrack(oneMinTrackName, oneMinTrackMax))
+	t = append(t, *newTrack(fiveMinTrackName, fiveMinTrackMax))
+	t = append(t, *newTrack(hourTrackName, hourTrackMax))
 
 	return &ballClock{
 		tracks: t,
-		queue:  newQueue(numBalls),
+		queue:  *newQueue(numBalls),
 	}
 }
 
@@ -123,7 +124,7 @@ func (c *ballClock) incrementOneMin() {
 		if returningBalls == nil {
 			return
 		}
-		c.queue.addBalls(returningBalls)
+		c.queue.addBalls(&returningBalls)
 	}
 
 	c.queue.addBall(nextBall)

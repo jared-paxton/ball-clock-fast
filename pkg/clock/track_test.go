@@ -9,42 +9,42 @@ func TestAddBall(t *testing.T) {
 	tests := []struct {
 		name          string
 		track         ballTrack
-		ballToAdd     clockBall
-		wantBallOrder []clockBall
-		wantReturn    []clockBall
+		ballToAdd     int
+		wantBallOrder []int
+		wantReturn    []int
 	}{
 		{
 			name: "should add ball to empty track",
 			track: ballTrack{
 				name:  "Minute",
-				balls: []clockBall{},
+				balls: []int{},
 				max:   4,
 			},
 			ballToAdd:     1,
-			wantBallOrder: []clockBall{1},
+			wantBallOrder: []int{1},
 			wantReturn:    nil,
 		},
 		{
 			name: "should add ball to partially full track",
 			track: ballTrack{
 				name:  "Minute",
-				balls: []clockBall{32, 4},
+				balls: []int{32, 4},
 				max:   4,
 			},
 			ballToAdd:     10,
-			wantBallOrder: []clockBall{32, 4, 10},
+			wantBallOrder: []int{32, 4, 10},
 			wantReturn:    nil,
 		},
 		{
 			name: "should trigger balls to \"fall\" from track",
 			track: ballTrack{
 				name:  "Minute",
-				balls: []clockBall{50, 1, 127, 43},
+				balls: []int{50, 1, 127, 43},
 				max:   4,
 			},
 			ballToAdd:     10,
-			wantBallOrder: []clockBall{},
-			wantReturn:    []clockBall{43, 127, 1, 50},
+			wantBallOrder: []int{},
+			wantReturn:    []int{43, 127, 1, 50},
 		},
 	}
 

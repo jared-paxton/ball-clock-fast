@@ -50,7 +50,7 @@ func main() {
 			}
 
 			fmt.Println()
-			err = clock.ClockState(numBalls, minutes)
+			err = clock.State(numBalls, minutes)
 			if err != nil {
 				fmt.Println("Error:", err)
 			}
