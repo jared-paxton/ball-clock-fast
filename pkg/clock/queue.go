@@ -32,7 +32,8 @@ func (bq *ballQueue) equals(otherQueue *ballQueue) bool {
 func newQueue(numBalls uint8) *ballQueue {
 	queueBalls := make([]uint8, 0, numBalls)
 
-	for i := uint8(1); i <= numBalls; i++ {
+	var i uint8
+	for i = 1; i <= numBalls; i++ {
 		queueBalls = append(queueBalls, i)
 	}
 
