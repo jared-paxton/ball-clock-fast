@@ -114,11 +114,16 @@ func (c *ballClock) incrementOneMin() {
 	nextBall := c.queue.removeBall()
 
 	for i := range c.tracks {
-		returningBalls := c.tracks[i].addBall(nextBall)
-		if returningBalls == nil {
+		ballAdded := c.tracks[i].addBall(nextBall)
+		if !ballAdded {
+			for j := c.tracks[i].max - 1; j >= 0; j-- {
+				ball := c.tracks[i].getBall(j)
+				c.queue.addBall(ball)
+			}
+			c.tracks[i].empty()
+		} else {
 			return
 		}
-		c.queue.addBalls(&returningBalls)
 	}
 
 	c.queue.addBall(nextBall)

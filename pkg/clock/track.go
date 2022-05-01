@@ -4,15 +4,22 @@ import (
 	"fmt"
 )
 
-func (track *ballTrack) addBall(b int) []int {
-	if len(track.balls) == track.max {
-		returnedBalls := reverseBallOrder(track.balls)
-		track.balls = track.balls[:0]
-		return returnedBalls
+func (t *ballTrack) addBall(b int) bool {
+	if len(t.balls) == t.max {
+		return false
 	}
 
-	track.balls = append(track.balls, b)
-	return nil
+	t.balls = append(t.balls, b)
+	return true
+}
+
+func (t *ballTrack) getBall(pos int) int {
+	ball := t.balls[pos]
+	return ball
+}
+
+func (t *ballTrack) empty() {
+	t.balls = t.balls[:0]
 }
 
 func reverseBallOrder(orig []int) []int {
