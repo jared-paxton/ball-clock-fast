@@ -45,16 +45,16 @@ func CycleDays(numBalls int) error {
 }
 
 func determineClockState(numBalls, minToRun int) *ballClock {
-	clock := new(numBalls)
+	clock := newClock(numBalls)
 	clock.incrementMultipleMin(minToRun)
 	return clock
 }
 
 func (c *ballClock) marshallJSON() ([]byte, error) {
 	clock := clockJSON{
-		OneMinTrack:  c.tracks[minutePos].balls,
-		FiveMinTrack: c.tracks[fiveMinPos].balls,
-		HourTrack:    c.tracks[hrPos].balls,
+		OneMinTrack:  c.minTrack.balls,
+		FiveMinTrack: c.fiveMinTrack.balls,
+		HourTrack:    c.hrTrack.balls,
 		Queue:        c.queue.balls,
 	}
 
@@ -67,7 +67,7 @@ func (c *ballClock) marshallJSON() ([]byte, error) {
 }
 
 func determineCycleDays(numBalls int) int {
-	clock := new(numBalls)
+	clock := newClock(numBalls)
 	initialClock := *clock
 
 	// No need to check if the states are equal before the calculated minimum
@@ -89,15 +89,12 @@ func validateInput(numBalls int) error {
 	return nil
 }
 
-func new(numBalls int) *ballClock {
-	t := make([]ballTrack, 0, 3)
-	t = append(t, *newTrack(oneMinTrackName, oneMinTrackMax))
-	t = append(t, *newTrack(fiveMinTrackName, fiveMinTrackMax))
-	t = append(t, *newTrack(hourTrackName, hourTrackMax))
-
+func newClock(numBalls int) *ballClock {
 	return &ballClock{
-		tracks: t,
-		queue:  *newQueue(numBalls),
+		minTrack:     *newTrack(oneMinTrackName, oneMinTrackMax),
+		fiveMinTrack: *newTrack(fiveMinTrackName, fiveMinTrackMax),
+		hrTrack:      *newTrack(hourTrackName, hourTrackMax),
+		queue:        *newQueue(numBalls),
 	}
 }
 
@@ -107,23 +104,39 @@ func (c *ballClock) incrementMultipleMin(minutes int) {
 	}
 }
 
+func (c *ballClock) dropTrackBalls(t *ballTrack) {
+	for j := t.max - 1; j >= 0; j-- {
+		ball := t.getBall(j)
+		c.queue.addBall(ball)
+	}
+	t.empty()
+}
+
 // incrementOneMin implements the core functionality of the ball clock
 // simulation. It increments the clock by one minute, and modifies the
 // state of the clock accordingly.
 func (c *ballClock) incrementOneMin() {
 	nextBall := c.queue.removeBall()
 
-	for i := range c.tracks {
-		ballAdded := c.tracks[i].addBall(nextBall)
-		if !ballAdded {
-			for j := c.tracks[i].max - 1; j >= 0; j-- {
-				ball := c.tracks[i].getBall(j)
-				c.queue.addBall(ball)
-			}
-			c.tracks[i].empty()
-		} else {
-			return
-		}
+	ballAdded := c.minTrack.addBall(nextBall)
+	if !ballAdded {
+		c.dropTrackBalls(&c.minTrack)
+	} else {
+		return
+	}
+
+	ballAdded = c.fiveMinTrack.addBall(nextBall)
+	if !ballAdded {
+		c.dropTrackBalls(&c.fiveMinTrack)
+	} else {
+		return
+	}
+
+	ballAdded = c.hrTrack.addBall(nextBall)
+	if !ballAdded {
+		c.dropTrackBalls(&c.hrTrack)
+	} else {
+		return
 	}
 
 	c.queue.addBall(nextBall)
@@ -135,9 +148,9 @@ func (c *ballClock) equals(otherClock *ballClock) bool {
 
 // time is a helper function for debugging and testing
 func (c *ballClock) time() string {
-	hour := len(c.tracks[hrPos].balls) + 1
-	fiveMin := len(c.tracks[fiveMinPos].balls) * 5
-	minute := len(c.tracks[minutePos].balls) + fiveMin
+	hour := len(c.hrTrack.balls) + 1
+	fiveMin := len(c.fiveMinTrack.balls) * 5
+	minute := len(c.minTrack.balls) + fiveMin
 
 	hourStr := strconv.Itoa(hour)
 	if hour < 10 {
@@ -154,11 +167,11 @@ func (c *ballClock) time() string {
 // print is a helper function for visualizing the clock (debugging)
 func (c *ballClock) print() {
 	fmt.Println("-------------------------------------------------------------------")
-	c.tracks[minutePos].print(0)
+	c.minTrack.print(0)
 	fmt.Println()
-	c.tracks[fiveMinPos].print(0)
+	c.fiveMinTrack.print(0)
 	fmt.Println()
-	c.tracks[hrPos].print(1)
+	c.hrTrack.print(1)
 	fmt.Println()
 	c.queue.print()
 	fmt.Println("-------------------------------------------------------------------")

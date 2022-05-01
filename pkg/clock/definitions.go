@@ -19,12 +19,6 @@ const (
 	hourTrackName    string = "Hour"
 )
 
-const (
-	minutePos  int = 0
-	fiveMinPos int = 1
-	hrPos          = 2
-)
-
 type ballTrack struct {
 	name  string
 	balls []int
@@ -36,8 +30,10 @@ type ballQueue struct {
 }
 
 type ballClock struct {
-	tracks []ballTrack
-	queue  ballQueue
+	minTrack     ballTrack
+	fiveMinTrack ballTrack
+	hrTrack      ballTrack
+	queue        ballQueue
 }
 
 type clockJSON struct {
