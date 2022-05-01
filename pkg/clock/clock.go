@@ -36,11 +36,8 @@ func CycleDays(numBalls int) error {
 	}
 
 	start := time.Now()
-	days, err := determineCycleDays(numBalls)
+	days := determineCycleDays(numBalls)
 	duration := time.Since(start)
-	if err != nil {
-		return err
-	}
 
 	fmt.Printf("%d balls cycle after %d days\n", numBalls, days)
 	fmt.Printf("Completed in %d milliseconds (%.3f seconds)\n", duration.Milliseconds(), duration.Seconds())
@@ -69,7 +66,7 @@ func (c *ballClock) marshallJSON() ([]byte, error) {
 	return js, nil
 }
 
-func determineCycleDays(numBalls int) (int, error) {
+func determineCycleDays(numBalls int) int {
 	clock := new(numBalls)
 	initialClock := *clock
 
@@ -82,7 +79,7 @@ func determineCycleDays(numBalls int) (int, error) {
 		min++
 	}
 
-	return minutesToDays(min), nil
+	return minutesToDays(min)
 }
 
 func validateInput(numBalls int) error {
