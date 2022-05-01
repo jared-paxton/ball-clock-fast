@@ -91,18 +91,18 @@ func TestDetermineCycleDays(t *testing.T) {
 			wantDays: 378,
 			wantErr:  nil,
 		},
-		{
-			name:     "should return error with input of 26 balls",
-			numBalls: 26,
-			wantDays: 0,
-			wantErr:  fmt.Errorf("number of balls must be between %d and %d", minBalls, maxBalls),
-		},
-		{
-			name:     "should return error with input of 128 balls",
-			numBalls: 128,
-			wantDays: 0,
-			wantErr:  fmt.Errorf("number of balls must be between %d and %d", minBalls, maxBalls),
-		},
+		// {
+		// 	name:     "should return error with input of 26 balls",
+		// 	numBalls: 26,
+		// 	wantDays: 0,
+		// 	wantErr:  fmt.Errorf("number of balls must be between %d and %d", minBalls, maxBalls),
+		// },
+		// {
+		// 	name:     "should return error with input of 128 balls",
+		// 	numBalls: 128,
+		// 	wantDays: 0,
+		// 	wantErr:  fmt.Errorf("number of balls must be between %d and %d", minBalls, maxBalls),
+		// },
 	}
 
 	for _, test := range tests {

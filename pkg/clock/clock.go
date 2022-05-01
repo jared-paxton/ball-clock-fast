@@ -30,6 +30,11 @@ func State(numBalls, minToRun int) error {
 // CycleDays prints the number of days it takes for the ordering of the balls in the clock
 // to return to the same order in its initial state, given the number of balls.
 func CycleDays(numBalls int) error {
+	err := validateInput(numBalls)
+	if err != nil {
+		return err
+	}
+
 	start := time.Now()
 	days, err := determineCycleDays(numBalls)
 	duration := time.Since(start)
@@ -65,10 +70,6 @@ func (c *ballClock) marshallJSON() ([]byte, error) {
 }
 
 func determineCycleDays(numBalls int) (int, error) {
-	if numBalls < minBalls || numBalls > maxBalls {
-		return 0, fmt.Errorf("number of balls must be between %d and %d", minBalls, maxBalls)
-	}
-
 	clock := new(numBalls)
 	initialClock := *clock
 
@@ -76,12 +77,8 @@ func determineCycleDays(numBalls int) (int, error) {
 	clock.incrementMultipleMin(minMinutesToRepeat - 1)
 
 	min := minMinutesToRepeat
-	for {
+	for !clock.equals(&initialClock) {
 		clock.incrementOneMin()
-
-		if clock.equals(&initialClock) {
-			break
-		}
 		min++
 	}
 
