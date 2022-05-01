@@ -9,7 +9,7 @@ import (
 
 // State prints the state of a ball clock with the given number of balls
 // and ran for the specified minutes in a JSON format.
-func State(numBalls, minToRun int) error {
+func State(numBalls uint8, minToRun int) error {
 	err := validateInput(numBalls)
 	if err != nil {
 		return err
@@ -29,7 +29,7 @@ func State(numBalls, minToRun int) error {
 
 // CycleDays prints the number of days it takes for the ordering of the balls in the clock
 // to return to the same order in its initial state, given the number of balls.
-func CycleDays(numBalls int) error {
+func CycleDays(numBalls uint8) error {
 	err := validateInput(numBalls)
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func CycleDays(numBalls int) error {
 	return nil
 }
 
-func determineClockState(numBalls, minToRun int) *ballClock {
+func determineClockState(numBalls uint8, minToRun int) *ballClock {
 	clock := newClock(numBalls)
 	clock.incrementMultipleMin(minToRun)
 	return clock
@@ -66,7 +66,7 @@ func (c *ballClock) marshallJSON() ([]byte, error) {
 	return js, nil
 }
 
-func determineCycleDays(numBalls int) int {
+func determineCycleDays(numBalls uint8) int {
 	clock := newClock(numBalls)
 	initialClock := *clock
 
@@ -82,14 +82,14 @@ func determineCycleDays(numBalls int) int {
 	return minutesToDays(min)
 }
 
-func validateInput(numBalls int) error {
+func validateInput(numBalls uint8) error {
 	if numBalls < minBalls || numBalls > maxBalls {
 		return fmt.Errorf("number of balls must be between %d and %d", minBalls, maxBalls)
 	}
 	return nil
 }
 
-func newClock(numBalls int) *ballClock {
+func newClock(numBalls uint8) *ballClock {
 	return &ballClock{
 		minTrack:     *newTrack(oneMinTrackName, oneMinTrackMax),
 		fiveMinTrack: *newTrack(fiveMinTrackName, fiveMinTrackMax),

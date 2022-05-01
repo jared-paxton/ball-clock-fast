@@ -31,7 +31,7 @@ func main() {
 			}
 
 			fmt.Println()
-			err = clock.CycleDays(numBalls)
+			err = clock.CycleDays(uint8(numBalls))
 			if err != nil {
 				fmt.Println("Error:", err)
 			}
@@ -50,7 +50,7 @@ func main() {
 			}
 
 			fmt.Println()
-			err = clock.State(numBalls, minutes)
+			err = clock.State(uint8(numBalls), minutes)
 			if err != nil {
 				fmt.Println("Error:", err)
 			}

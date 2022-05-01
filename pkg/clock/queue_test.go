@@ -9,15 +9,15 @@ func TestAddBAll(t *testing.T) {
 	tests := []struct {
 		name       string
 		queue      ballQueue
-		wantBalls  []int
-		wantReturn int
+		wantBalls  []uint8
+		wantReturn uint8
 	}{
 		{
 			name: "should remove first ball from queue",
 			queue: ballQueue{
-				balls: []int{55, 3, 29, 100},
+				balls: []uint8{55, 3, 29, 100},
 			},
-			wantBalls:  []int{3, 29, 100},
+			wantBalls:  []uint8{3, 29, 100},
 			wantReturn: 55,
 		},
 	}

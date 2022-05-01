@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func (t *ballTrack) addBall(b int) bool {
+func (t *ballTrack) addBall(b uint8) bool {
 	if len(t.balls) == t.max {
 		return false
 	}
@@ -13,7 +13,7 @@ func (t *ballTrack) addBall(b int) bool {
 	return true
 }
 
-func (t *ballTrack) getBall(pos int) int {
+func (t *ballTrack) getBall(pos int) uint8 {
 	ball := t.balls[pos]
 	return ball
 }
@@ -22,21 +22,8 @@ func (t *ballTrack) empty() {
 	t.balls = t.balls[:0]
 }
 
-func reverseBallOrder(orig []int) []int {
-	reversed := make([]int, len(orig))
-	copy(reversed, orig)
-
-	half := len(orig) / 2
-	for i := 0; i < half; i++ {
-		j := len(orig) - i - 1
-		reversed[i], reversed[j] = orig[j], orig[i]
-	}
-
-	return reversed
-}
-
 func newTrack(name string, max int) *ballTrack {
-	balls := make([]int, 0, max)
+	balls := make([]uint8, 0, max)
 	return &ballTrack{
 		name:  name,
 		balls: balls,

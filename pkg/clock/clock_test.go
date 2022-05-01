@@ -52,11 +52,11 @@ func TestClockIncrement(t *testing.T) {
 
 func TestDetermineClockState(t *testing.T) {
 	wantClockState := ballClock{
-		minTrack:     ballTrack{balls: []int{}},
-		fiveMinTrack: ballTrack{balls: []int{22, 13, 25, 3, 7}},
-		hrTrack:      ballTrack{balls: []int{6, 12, 17, 4, 15}},
+		minTrack:     ballTrack{balls: []uint8{}},
+		fiveMinTrack: ballTrack{balls: []uint8{22, 13, 25, 3, 7}},
+		hrTrack:      ballTrack{balls: []uint8{6, 12, 17, 4, 15}},
 		queue: ballQueue{
-			balls: []int{11, 5, 26, 18, 2, 30, 19, 8, 24, 10, 29, 20, 16, 21, 28, 1, 23, 14, 27, 9},
+			balls: []uint8{11, 5, 26, 18, 2, 30, 19, 8, 24, 10, 29, 20, 16, 21, 28, 1, 23, 14, 27, 9},
 		},
 	}
 
@@ -73,7 +73,7 @@ func TestDetermineClockState(t *testing.T) {
 func TestDetermineCycleDays(t *testing.T) {
 	tests := []struct {
 		name     string
-		numBalls int
+		numBalls uint8
 		wantDays int
 		wantErr  error
 	}{

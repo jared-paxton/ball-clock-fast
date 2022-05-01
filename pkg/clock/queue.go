@@ -2,17 +2,17 @@ package clock
 
 import "fmt"
 
-func (bq *ballQueue) removeBall() int {
+func (bq *ballQueue) removeBall() uint8 {
 	nextBall := bq.balls[0]
 	bq.balls = bq.balls[1:]
 	return nextBall
 }
 
-func (bq *ballQueue) addBalls(balls *[]int) {
+func (bq *ballQueue) addBalls(balls *[]uint8) {
 	bq.balls = append(bq.balls, *balls...)
 }
 
-func (bq *ballQueue) addBall(ball int) {
+func (bq *ballQueue) addBall(ball uint8) {
 	bq.balls = append(bq.balls, ball)
 }
 
@@ -29,10 +29,10 @@ func (bq *ballQueue) equals(otherQueue *ballQueue) bool {
 	return true
 }
 
-func newQueue(numBalls int) *ballQueue {
-	queueBalls := make([]int, 0, numBalls)
+func newQueue(numBalls uint8) *ballQueue {
+	queueBalls := make([]uint8, 0, numBalls)
 
-	for i := 1; i <= numBalls; i++ {
+	for i := uint8(1); i <= numBalls; i++ {
 		queueBalls = append(queueBalls, i)
 	}
 
