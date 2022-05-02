@@ -8,10 +8,6 @@ func (bq *ballQueue) removeBall() uint8 {
 	return nextBall
 }
 
-func (bq *ballQueue) addBalls(balls *[]uint8) {
-	bq.balls = append(bq.balls, *balls...)
-}
-
 func (bq *ballQueue) addBall(ball uint8) {
 	bq.balls = append(bq.balls, ball)
 }
