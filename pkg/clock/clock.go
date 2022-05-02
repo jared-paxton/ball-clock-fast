@@ -67,15 +67,108 @@ func (c *ballClock) marshallJSON() ([]byte, error) {
 }
 
 func determineCycleDays(numBalls uint8) int {
-	clock := newClock(numBalls)
-	initialClock := *clock
+	c := newClock(numBalls)
+	initialClock := *c
 
 	// No need to check if the states are equal before the calculated minimum
-	clock.incrementMultipleMin(minMinutesToRepeat - 1)
+	// clock.incrementMultipleMin(minMinutesToRepeat - 1)
+	min := 0
+	for min < minMinutesToRepeat {
+		nextBall := c.queue.balls[0]
+		c.queue.balls = c.queue.balls[1:]
 
-	min := minMinutesToRepeat
-	for !clock.equals(&initialClock) {
-		clock.incrementOneMin()
+		t := &c.minTrack
+		//fmt.Printf("t (before): %v\n", *t)
+		//fmt.Printf("c.minTrack address: %p\tt address: %p\n", &c.minTrack, t)
+		if len(t.balls) == t.max {
+			for j := t.max - 1; j >= 0; j-- {
+				ball := t.balls[j]
+				c.queue.balls = append(c.queue.balls, ball)
+			}
+			t.balls = t.balls[:0]
+		} else {
+			t.balls = append(t.balls, nextBall)
+			min++
+			continue
+		}
+
+		t = &c.fiveMinTrack
+		if len(t.balls) == t.max {
+			for j := t.max - 1; j >= 0; j-- {
+				ball := t.balls[j]
+				c.queue.balls = append(c.queue.balls, ball)
+			}
+			t.balls = t.balls[:0]
+		} else {
+			t.balls = append(t.balls, nextBall)
+			min++
+			continue
+		}
+
+		t = &c.hrTrack
+		if len(t.balls) == t.max {
+			for j := t.max - 1; j >= 0; j-- {
+				ball := t.balls[j]
+				c.queue.balls = append(c.queue.balls, ball)
+			}
+			t.balls = t.balls[:0]
+		} else {
+			t.balls = append(t.balls, nextBall)
+			min++
+			continue
+		}
+
+		c.queue.balls = append(c.queue.balls, nextBall)
+		min++
+	}
+
+	min = minMinutesToRepeat
+	for !c.equals(&initialClock) {
+		nextBall := c.queue.balls[0]
+		c.queue.balls = c.queue.balls[1:]
+
+		t := &c.minTrack
+		//fmt.Printf("t (before): %v\n", *t)
+		//fmt.Printf("c.minTrack address: %p\tt address: %p\n", &c.minTrack, t)
+		if len(t.balls) == t.max {
+			for j := t.max - 1; j >= 0; j-- {
+				ball := t.balls[j]
+				c.queue.balls = append(c.queue.balls, ball)
+			}
+			t.balls = t.balls[:0]
+		} else {
+			t.balls = append(t.balls, nextBall)
+			min++
+			continue
+		}
+
+		t = &c.fiveMinTrack
+		if len(t.balls) == t.max {
+			for j := t.max - 1; j >= 0; j-- {
+				ball := t.balls[j]
+				c.queue.balls = append(c.queue.balls, ball)
+			}
+			t.balls = t.balls[:0]
+		} else {
+			t.balls = append(t.balls, nextBall)
+			min++
+			continue
+		}
+
+		t = &c.hrTrack
+		if len(t.balls) == t.max {
+			for j := t.max - 1; j >= 0; j-- {
+				ball := t.balls[j]
+				c.queue.balls = append(c.queue.balls, ball)
+			}
+			t.balls = t.balls[:0]
+		} else {
+			t.balls = append(t.balls, nextBall)
+			min++
+			continue
+		}
+
+		c.queue.balls = append(c.queue.balls, nextBall)
 		min++
 	}
 
@@ -116,30 +209,48 @@ func (c *ballClock) dropTrackBalls(t *ballTrack) {
 // simulation. It increments the clock by one minute, and modifies the
 // state of the clock accordingly.
 func (c *ballClock) incrementOneMin() {
-	nextBall := c.queue.removeBall()
+	nextBall := c.queue.balls[0]
+	c.queue.balls = c.queue.balls[1:]
 
-	ballAdded := c.minTrack.addBall(nextBall)
-	if !ballAdded {
-		c.dropTrackBalls(&c.minTrack)
+	t := &c.minTrack
+	//fmt.Printf("t (before): %v\n", *t)
+	//fmt.Printf("c.minTrack address: %p\tt address: %p\n", &c.minTrack, t)
+	if len(t.balls) == t.max {
+		for j := t.max - 1; j >= 0; j-- {
+			ball := t.balls[j]
+			c.queue.balls = append(c.queue.balls, ball)
+		}
+		t.balls = t.balls[:0]
 	} else {
+		t.balls = append(t.balls, nextBall)
 		return
 	}
 
-	ballAdded = c.fiveMinTrack.addBall(nextBall)
-	if !ballAdded {
-		c.dropTrackBalls(&c.fiveMinTrack)
+	t = &c.fiveMinTrack
+	if len(t.balls) == t.max {
+		for j := t.max - 1; j >= 0; j-- {
+			ball := t.balls[j]
+			c.queue.balls = append(c.queue.balls, ball)
+		}
+		t.balls = t.balls[:0]
 	} else {
+		t.balls = append(t.balls, nextBall)
 		return
 	}
 
-	ballAdded = c.hrTrack.addBall(nextBall)
-	if !ballAdded {
-		c.dropTrackBalls(&c.hrTrack)
+	t = &c.hrTrack
+	if len(t.balls) == t.max {
+		for j := t.max - 1; j >= 0; j-- {
+			ball := t.balls[j]
+			c.queue.balls = append(c.queue.balls, ball)
+		}
+		t.balls = t.balls[:0]
 	} else {
+		t.balls = append(t.balls, nextBall)
 		return
 	}
 
-	c.queue.addBall(nextBall)
+	c.queue.balls = append(c.queue.balls, nextBall)
 }
 
 func (c *ballClock) equals(otherClock *ballClock) bool {
