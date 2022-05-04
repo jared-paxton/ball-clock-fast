@@ -14,8 +14,7 @@ func (t *ballTrack) addBall(b uint8) bool {
 }
 
 func (t *ballTrack) getBall(pos int) uint8 {
-	ball := t.balls[pos]
-	return ball
+	return t.balls[pos]
 }
 
 func (t *ballTrack) empty() {

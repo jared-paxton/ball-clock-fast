@@ -67,15 +67,16 @@ func (c *ballClock) marshallJSON() ([]byte, error) {
 }
 
 func determineCycleDays(numBalls uint8) int {
-	clock := newClock(numBalls)
-	initialClock := *clock
+	c := newClock(numBalls)
+	initialClock := *c
 
 	// No need to check if the states are equal before the calculated minimum
-	clock.incrementMultipleMin(minMinutesToRepeat - 1)
+	c.incrementMultipleMin(minMinutesToRepeat - 1)
 
 	min := minMinutesToRepeat
-	for !clock.equals(&initialClock) {
-		clock.incrementOneMin()
+	//min = minMinutesToRepeat
+	for !c.equals(&initialClock) {
+		c.incrementOneMin()
 		min++
 	}
 
@@ -119,30 +120,29 @@ func (c *ballClock) incrementOneMin() {
 	nextBall := c.queue.removeBall()
 
 	ballAdded := c.minTrack.addBall(nextBall)
-	if !ballAdded {
-		c.dropTrackBalls(&c.minTrack)
-	} else {
+	if ballAdded {
 		return
 	}
+	c.dropTrackBalls(&c.minTrack)
 
 	ballAdded = c.fiveMinTrack.addBall(nextBall)
-	if !ballAdded {
-		c.dropTrackBalls(&c.fiveMinTrack)
-	} else {
+	if ballAdded {
 		return
 	}
+	c.dropTrackBalls(&c.fiveMinTrack)
 
 	ballAdded = c.hrTrack.addBall(nextBall)
-	if !ballAdded {
-		c.dropTrackBalls(&c.hrTrack)
-	} else {
+	if ballAdded {
 		return
 	}
+	c.dropTrackBalls(&c.hrTrack)
 
 	c.queue.addBall(nextBall)
 }
 
 func (c *ballClock) equals(otherClock *ballClock) bool {
+	// Since I am comparing the initial state of the clock (which only has balls
+	// in the queue), I don't have to compare the tracks
 	return c.queue.equals(&otherClock.queue)
 }
 
