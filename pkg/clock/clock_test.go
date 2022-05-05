@@ -1,7 +1,9 @@
 package clock
 
 import (
+	"encoding/json"
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -51,22 +53,28 @@ func TestClockIncrement(t *testing.T) {
 }
 
 func TestDetermineClockState(t *testing.T) {
-	wantClockState := ballClock{
-		minTrack:     ballTrack{balls: []uint8{}},
-		fiveMinTrack: ballTrack{balls: []uint8{22, 13, 25, 3, 7}},
-		hrTrack:      ballTrack{balls: []uint8{6, 12, 17, 4, 15}},
-		queue: ballQueue{
-			balls: []uint8{11, 5, 26, 18, 2, 30, 19, 8, 24, 10, 29, 20, 16, 21, 28, 1, 23, 14, 27, 9},
-		},
+
+	wantClock := clockJSON{
+		OneMinTrack:  []int{},
+		FiveMinTrack: []int{22, 13, 25, 3, 7},
+		HourTrack:    []int{6, 12, 17, 4, 15},
+		Queue:        []int{11, 5, 26, 18, 2, 30, 19, 8, 24, 10, 29, 20, 16, 21, 28, 1, 23, 14, 27, 9},
+	}
+
+	wantJSON, err := json.Marshal(wantClock)
+	if err != nil {
+		t.Error(err)
 	}
 
 	clock := determineClockState(30, 325)
-	if !clock.equals(&wantClockState) {
+	jsonOutput, err := clock.marshallJSON()
+	if err != nil {
+		t.Error(err)
+	}
+	if !reflect.DeepEqual(wantJSON, jsonOutput) {
 		t.Error("TestDetermineClockState failed. States were not the same:")
-		json, _ := clock.marshallJSON()
-		fmt.Println("Got:", string(json))
-		json, _ = wantClockState.marshallJSON()
-		fmt.Println("Wanted:", string(json))
+		fmt.Println("Got:", string(jsonOutput))
+		fmt.Println("Wanted:", string(wantJSON))
 	}
 }
 

@@ -7,8 +7,8 @@ const (
 )
 
 const (
-	maxBalls uint8 = 127
-	minBalls uint8 = 27
+	maxBalls int = 127
+	minBalls int = 27
 	// First time at which 27 balls will repeat
 	minMinutesToRepeat int = 21600
 )
@@ -27,6 +27,9 @@ type ballTrack struct {
 
 type ballQueue struct {
 	balls []uint8
+	end   int
+	start int
+	max   int
 }
 
 type ballClock struct {
@@ -37,8 +40,8 @@ type ballClock struct {
 }
 
 type clockJSON struct {
-	OneMinTrack  []uint8 `json:"Min"`
-	FiveMinTrack []uint8 `json:"FiveMin"`
-	HourTrack    []uint8 `json:"Hour"`
-	Queue        []uint8 `json:"Main"`
+	OneMinTrack  []int `json:"Min"`
+	FiveMinTrack []int `json:"FiveMin"`
+	HourTrack    []int `json:"Hour"`
+	Queue        []int `json:"Main"`
 }

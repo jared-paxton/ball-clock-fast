@@ -21,9 +21,9 @@ func (t *ballTrack) empty() {
 	t.balls = t.balls[:0]
 }
 
-func newTrack(name string, max int) *ballTrack {
+func newTrack(name string, max int) ballTrack {
 	balls := make([]uint8, 0, max)
-	return &ballTrack{
+	return ballTrack{
 		name:  name,
 		balls: balls,
 		max:   max,

@@ -1,7 +1,6 @@
 package clock
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -9,15 +8,23 @@ func TestAddBAll(t *testing.T) {
 	tests := []struct {
 		name       string
 		queue      ballQueue
-		wantBalls  []uint8
+		wantQueue  ballQueue
 		wantReturn uint8
 	}{
 		{
 			name: "should remove first ball from queue",
 			queue: ballQueue{
 				balls: []uint8{55, 3, 29, 100},
+				max:   4,
+				end:   3,
+				start: 0,
 			},
-			wantBalls:  []uint8{3, 29, 100},
+			wantQueue: ballQueue{
+				balls: []uint8{55, 3, 29, 100},
+				max:   4,
+				end:   3,
+				start: 1,
+			},
 			wantReturn: 55,
 		},
 	}
@@ -29,9 +36,9 @@ func TestAddBAll(t *testing.T) {
 				t.Errorf("\"%v\" failed - got %d; want %d\n",
 					test.name, nextBall, test.wantReturn)
 			}
-			if !reflect.DeepEqual(test.wantBalls, test.queue.balls) {
+			if !test.wantQueue.equals(&test.queue) {
 				t.Errorf("\"%v\" failed - got %v; want %v\n",
-					test.name, test.queue.balls, test.wantBalls)
+					test.name, test.queue, test.wantQueue)
 			}
 		})
 	}

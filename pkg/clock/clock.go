@@ -9,13 +9,13 @@ import (
 
 // State prints the state of a ball clock with the given number of balls
 // and ran for the specified minutes in a JSON format.
-func State(numBalls uint8, minToRun int) error {
-	err := validateInput(numBalls)
+func State(numBalls int, minToRun int) error {
+	num, err := validateInput(numBalls)
 	if err != nil {
 		return err
 	}
 
-	clock := determineClockState(numBalls, minToRun)
+	clock := determineClockState(num, minToRun)
 	jsonOutput, err := clock.marshallJSON()
 	if err != nil {
 		return err
@@ -29,14 +29,14 @@ func State(numBalls uint8, minToRun int) error {
 
 // CycleDays prints the number of days it takes for the ordering of the balls in the clock
 // to return to the same order in its initial state, given the number of balls.
-func CycleDays(numBalls uint8) error {
-	err := validateInput(numBalls)
+func CycleDays(numBalls int) error {
+	num, err := validateInput(numBalls)
 	if err != nil {
 		return err
 	}
 
 	start := time.Now()
-	days := determineCycleDays(numBalls)
+	days := determineCycleDays(num)
 	duration := time.Since(start)
 
 	fmt.Printf("%d balls cycle after %d days\n", numBalls, days)
@@ -50,12 +50,22 @@ func determineClockState(numBalls uint8, minToRun int) *ballClock {
 	return clock
 }
 
+func convertToInts(list []uint8) []int {
+	newList := make([]int, 0, len(list))
+	for _, num := range list {
+		newList = append(newList, int(num))
+	}
+
+	return newList
+}
+
 func (c *ballClock) marshallJSON() ([]byte, error) {
+
 	clock := clockJSON{
-		OneMinTrack:  c.minTrack.balls,
-		FiveMinTrack: c.fiveMinTrack.balls,
-		HourTrack:    c.hrTrack.balls,
-		Queue:        c.queue.balls,
+		OneMinTrack:  convertToInts(c.minTrack.balls),
+		FiveMinTrack: convertToInts(c.fiveMinTrack.balls),
+		HourTrack:    convertToInts(c.hrTrack.balls),
+		Queue:        convertToInts(c.queue.getList()),
 	}
 
 	js, err := json.Marshal(clock)
@@ -68,14 +78,13 @@ func (c *ballClock) marshallJSON() ([]byte, error) {
 
 func determineCycleDays(numBalls uint8) int {
 	c := newClock(numBalls)
-	initialClock := *c
+	initialClock := newClock(numBalls)
 
 	// No need to check if the states are equal before the calculated minimum
 	c.incrementMultipleMin(minMinutesToRepeat - 1)
 
 	min := minMinutesToRepeat
-	//min = minMinutesToRepeat
-	for !c.equals(&initialClock) {
+	for !c.equals(initialClock) {
 		c.incrementOneMin()
 		min++
 	}
@@ -83,19 +92,19 @@ func determineCycleDays(numBalls uint8) int {
 	return minutesToDays(min)
 }
 
-func validateInput(numBalls uint8) error {
+func validateInput(numBalls int) (uint8, error) {
 	if numBalls < minBalls || numBalls > maxBalls {
-		return fmt.Errorf("number of balls must be between %d and %d", minBalls, maxBalls)
+		return 0, fmt.Errorf("number of balls must be between %d and %d", minBalls, maxBalls)
 	}
-	return nil
+	return uint8(numBalls), nil
 }
 
 func newClock(numBalls uint8) *ballClock {
 	return &ballClock{
-		minTrack:     *newTrack(oneMinTrackName, oneMinTrackMax),
-		fiveMinTrack: *newTrack(fiveMinTrackName, fiveMinTrackMax),
-		hrTrack:      *newTrack(hourTrackName, hourTrackMax),
-		queue:        *newQueue(numBalls),
+		minTrack:     newTrack(oneMinTrackName, oneMinTrackMax),
+		fiveMinTrack: newTrack(fiveMinTrackName, fiveMinTrackMax),
+		hrTrack:      newTrack(hourTrackName, hourTrackMax),
+		queue:        newQueue(numBalls),
 	}
 }
 
