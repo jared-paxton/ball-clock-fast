@@ -55,9 +55,7 @@ func TestDetermineClockState(t *testing.T) {
 		minTrack:     ballTrack{balls: []uint8{}},
 		fiveMinTrack: ballTrack{balls: []uint8{22, 13, 25, 3, 7}},
 		hrTrack:      ballTrack{balls: []uint8{6, 12, 17, 4, 15}},
-		queue: ballQueue{
-			balls: []uint8{11, 5, 26, 18, 2, 30, 19, 8, 24, 10, 29, 20, 16, 21, 28, 1, 23, 14, 27, 9},
-		},
+		queue:        []uint8{11, 5, 26, 18, 2, 30, 19, 8, 24, 10, 29, 20, 16, 21, 28, 1, 23, 14, 27, 9},
 	}
 
 	clock := determineClockState(30, 325)

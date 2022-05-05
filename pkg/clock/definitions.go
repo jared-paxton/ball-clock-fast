@@ -25,15 +25,11 @@ type ballTrack struct {
 	max   int
 }
 
-type ballQueue struct {
-	balls []uint8
-}
-
 type ballClock struct {
 	minTrack     ballTrack
 	fiveMinTrack ballTrack
 	hrTrack      ballTrack
-	queue        ballQueue
+	queue        []uint8
 }
 
 type clockJSON struct {

@@ -4,27 +4,9 @@ import (
 	"fmt"
 )
 
-func (t *ballTrack) addBall(b uint8) bool {
-	if len(t.balls) == t.max {
-		return false
-	}
-
-	t.balls = append(t.balls, b)
-	return true
-}
-
-func (t *ballTrack) getBall(pos int) uint8 {
-	ball := t.balls[pos]
-	return ball
-}
-
-func (t *ballTrack) empty() {
-	t.balls = t.balls[:0]
-}
-
-func newTrack(name string, max int) *ballTrack {
+func newTrack(name string, max int) ballTrack {
 	balls := make([]uint8, 0, max)
-	return &ballTrack{
+	return ballTrack{
 		name:  name,
 		balls: balls,
 		max:   max,
