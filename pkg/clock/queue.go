@@ -23,7 +23,7 @@ func (bq *ballQueue) equals(otherQueue *ballQueue) bool {
 	if bq.start != otherQueue.start || bq.end != otherQueue.end {
 		return false
 	}
-	for i := 0; i < len(bq.balls); i++ {
+	for i := 0; i < bq.max; i++ {
 		if bq.balls[i] != otherQueue.balls[i] {
 			return false
 		}
@@ -54,7 +54,7 @@ func newQueue(numBalls uint8) ballQueue {
 	queueBalls := make([]uint8, 0, numBalls)
 
 	var i uint8
-	for i = 1; i <= uint8(numBalls); i++ {
+	for i = 1; i <= numBalls; i++ {
 		queueBalls = append(queueBalls, i)
 	}
 
