@@ -5,7 +5,7 @@ import (
 )
 
 func (t *ballTrack) addBall(b uint8) bool {
-	if len(t.balls) == t.max {
+	if len(t.balls) == cap(t.balls) {
 		return false
 	}
 
@@ -21,12 +21,10 @@ func (t *ballTrack) empty() {
 	t.balls = t.balls[:0]
 }
 
-func newTrack(name string, max int) ballTrack {
+func newTrack(max int) ballTrack {
 	balls := make([]uint8, 0, max)
 	return ballTrack{
-		name:  name,
 		balls: balls,
-		max:   max,
 	}
 }
 
@@ -46,12 +44,12 @@ func (track *ballTrack) equals(otherTrack *ballTrack) bool {
 
 // print is a helper function for visualizing the track (debugging)
 func (track *ballTrack) print(numToAdd int) {
-	fmt.Printf("%s:\n", track.name)
+	// fmt.Printf("%s:\n", track.name)
 	for i := 0; i < len(track.balls)+numToAdd; i++ {
 		fmt.Printf("* ")
 	}
 	fmt.Println()
-	for i := 1; i <= track.max+numToAdd; i++ {
+	for i := 1; i <= cap(track.balls)+numToAdd; i++ {
 		fmt.Printf("%d ", i)
 	}
 	fmt.Println()

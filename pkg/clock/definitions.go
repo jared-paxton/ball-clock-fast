@@ -13,16 +13,8 @@ const (
 	minMinutesToRepeat int = 21600
 )
 
-const (
-	oneMinTrackName  string = "Min"
-	fiveMinTrackName string = "FiveMin"
-	hourTrackName    string = "Hour"
-)
-
 type ballTrack struct {
-	name  string
 	balls []uint8
-	max   int
 }
 
 type ballQueue struct {
